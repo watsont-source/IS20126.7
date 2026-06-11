@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Job Automation Risk Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background-color: #f5f7fa;
+            color: #1f2933;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 24px;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            color: #1c2a3a;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .value {
+            font-size: 14px;
+            color: #475569;
+        }
+
+        button {
+            margin-top: 28px;
+            padding: 10px 18px;
+            font-size: 16px;
+            background-color: #1c2a3a;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2f5fa7;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 16px;
+            background-color: #f1f5f9;
+            border-left: 4px solid #2f5fa7;
+        }
+
+        .low {
+            border-left-color: #16a34a;
+        }
+
+        .medium {
+            border-left-color: #ca8a04;
+        }
+
+        .high {
+            border-left-color: #dc2626;
+        }
+
+        a {
+            display: block;
+            margin-top: 28px;
+            text-align: center;
+            color: #2f5fa7;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>AI Job Automation Risk Simulator</h1>
+
+        <p>
+            This interactive model estimates how exposed a job might be to artificial intelligence
+            automation. It uses simplified workplace indicators, so the result is for educational
+            purposes only and does not predict the future of any specific career.
+        </p>
+
+        <label for="repetition">Repetitive Task Level</label>
+        <input type="range" id="repetition" min="0" max="100" value="50">
+        <div class="value" id="repetitionVal">50</div>
+
+        <label for="judgment">Need for Human Judgment</label>
+        <input type="range" id="judgment" min="0" max="100" value="50">
+        <div class="value" id="judgmentVal">50</div>
+
+        <label for="communication">Need for Human Communication</label>
+        <input type="range" id="communication" min="0" max="100" value="50">
+        <div class="value" id="communicationVal">50</div>
+
+        <label for="technology">Current Technology Adoption</label>
+        <input type="range" id="technology" min="0" max="100" value="50">
+        <div class="value" id="technologyVal">50</div>
+
+        <button id="calcBtn">Calculate Automation Risk</button>
+
+        <div class="result" id="result">
+            Adjust the sliders and click the button to view the estimated automation risk score.
+        </div>
+
+        <a href="../scratch.html">Back to Scratch Page</a>
+    </div>
+
+    <script>
+        const sliders = [
+            { id: 'repetition', out: 'repetitionVal' },
+            { id: 'judgment', out: 'judgmentVal' },
+            { id: 'communication', out: 'communicationVal' },
+            { id: 'technology', out: 'technologyVal' }
+        ];
+
+        sliders.forEach(s => {
+            const slider = document.getElementById(s.id);
+            const output = document.getElementById(s.out);
+
+            output.textContent = slider.value;
+
+            slider.addEventListener('input', () => {
+                output.textContent = slider.value;
+            });
+        });
+
+        document.getElementById('calcBtn').addEventListener('click', function () {
+            const repetition = parseInt(document.getElementById('repetition').value, 10);
+            const judgment = parseInt(document.getElementById('judgment').value, 10);
+            const communication = parseInt(document.getElementById('communication').value, 10);
+            const technology = parseInt(document.getElementById('technology').value, 10);
+
+            const riskScore = Math.round(
+                (repetition * 0.35) +
+                ((100 - judgment) * 0.25) +
+                ((100 - communication) * 0.20) +
+                (technology * 0.20)
+            );
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('low', 'medium', 'high');
+
+            let message = '';
+            let level = '';
+
+            if (riskScore < 35) {
+                message = 'Low automation risk. This work appears to rely heavily on human judgment, communication, or specialized skills.';
+                level = 'low';
+            } else if (riskScore < 65) {
+                message = 'Moderate automation risk. AI may change parts of this work, but human skills will likely still matter.';
+                level = 'medium';
+            } else {
+                message = 'High automation risk. Many tasks in this type of work may be easier for AI or automation tools to replace or reduce.';
+                level = 'high';
+            }
+
+            resultDiv.classList.add(level);
+            resultDiv.innerHTML = '<strong>Automation Risk Score:</strong> ' + riskScore + '/100<br><br>' + message;
+        });
+    </script>
+
+</body>
+</html>
